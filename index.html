@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+</head>
+
+<body>
+    <div id="app">
+        <v-app>
+            <v-content>
+                <v-container>
+                    <template>
+                        <template>
+                            <v-data-table :headers="headers" :items="trainings" class="elevation-1">
+                                <template v-slot:items="props">
+                                    <td>{{props.item.id}}</td>
+                                    <td>{{props.item.error}}</td>
+                                    <td>{{props.item.output}} </td>
+                                </template>
+
+                            </v-data-table>
+                        </template>
+
+                        <!-- <span id="desc_entrada">entrada:{{entrada}}</span><br>
+                        <span id="desc_busca">busca:{{busca}}</span><br>
+                        <span id="desc_epocas">épocas:{{epocas}}</span> -->
+                        <v-form ref="form">
+                            <v-text-field label="Entrada" v-model="entrada" required></v-text-field>
+
+                            <v-text-field label="Busca" v-model="busca" required></v-text-field>
+
+                            <v-text-field label="Epocas" v-model="epocas" required></v-text-field>
+
+                            <v-btn color="error">
+                                Cancelar
+                            </v-btn>
+
+                            <v-btn color="warning" @click="executar">
+                                Confirmar
+                            </v-btn>
+                        </v-form>
+                    </template>
+                </v-container>
+            </v-content>
+        </v-app>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.js"></script>
+    <!-- <script src="./js/funcao-aproximacao.js"></script> -->
+    <script>
+        new Vue({
+            el: '#app',
+            data() {
+                return {
+                    entrada: '',
+                    busca: '',
+                    peso: '',
+                    epocas: '',
+                    output: '',
+                    error: '',
+                    training: {},
+                    trainings: [],
+                    headers: [
+                        { text: 'Època', value: 'epoca' },
+                        { text: 'Erro', value: 'erro' },
+                        { text: 'Saida', value: 'saida' },
+                    ]
+                }
+            },
+            methods: {
+                derivada(n) {
+                    return n * (1 - n)
+                },
+                executar() {
+                    let input = this.entrada
+                    let target = this.busca
+                    //let weight = Math.random()
+                    let lines = ''
+                    for (let i = 1; i <= this.epocas; i++) {
+                        this.training.id = i
+                        this.training.output = Math.tanh(input * Math.random()).toFixed(8) // função hiperbólica, função de ativação
+                        this.training.error = this.zeros(Math.abs((target - this.training.output).toFixed(4)))
+                        this.training.weight += input * this.derivada(this.training.error)
+                        this.trainings.push(this.training)
+                        this.training = {}
+
+                    }
+                },
+                zeros(n){
+                    if(n == 0){
+                        return '0.0000'
+                    }
+                    else{
+                        let str = n.toString().trim()
+                        let length = str.length
+                        let dif = 6 - length
+                        if(dif > 0){
+                            for (let i = 0; i < dif.length; i++) {
+                                str += '0'
+                                
+                            }
+                        }
+                        n = str
+                        return n
+                    }
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
