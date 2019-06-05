@@ -76,15 +76,18 @@
                     return n * (1 - n)
                 },
                 executar() {
-                    let target = this.busca
-                    let weight = Math.random()
+                    let target = this.busca //SINAIS DE ENTRADA
+                    let weight = Math.random() // PESO SIGNÁPTICO
+                    let bias = Math.random()//BIAS
 
-                    for (let i = 1; i <= this.epocas; i++) {
+                    for (let i = 1; i <= this.epocas; i++) {                            
+
                         this.training.id = i
                         this.training.output = Math.tanh(this.entrada * weight)// função hiperbólica, função de ativação
-                        this.training.error  = this.zeros(Math.abs((target - this.training.output))).toFixed(4)                   
+                        this.training.error  = this.zeros(Math.abs((target - this.training.output))).toFixed(4) 
+
+                        weight += this.entrada * this.derivada((target - this.training.output))  * bias
                         
-                        weight += this.entrada * this.derivada((target - this.training.output))
 
                         this.trainings.push(this.training)
 
