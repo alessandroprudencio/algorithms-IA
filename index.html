@@ -18,7 +18,7 @@
                                 <template v-slot:items="props">
                                     <td>{{props.item.id}}</td>
                                     <td>{{props.item.error}}</td>
-                                    <td>{{props.item.output}} </td>
+                                    <td>{{props.item.output.toFixed(8) }} </td>
                                 </template>
 
                             </v-data-table>
@@ -76,35 +76,39 @@
                     return n * (1 - n)
                 },
                 executar() {
-                    let input = this.entrada
                     let target = this.busca
-                    //let weight = Math.random()
-                    let lines = ''
+                    let weight = Math.random()
+
                     for (let i = 1; i <= this.epocas; i++) {
                         this.training.id = i
-                        this.training.output = Math.tanh(input * Math.random()).toFixed(8) // função hiperbólica, função de ativação
-                        this.training.error = this.zeros(Math.abs((target - this.training.output).toFixed(4)))
-                        this.training.weight += input * this.derivada(this.training.error)
-                        this.trainings.push(this.training)
-                        this.training = {}
+                        this.training.output = Math.tanh(this.entrada * weight)// função hiperbólica, função de ativação
+                        this.training.error  = this.zeros(Math.abs((target - this.training.output))).toFixed(4)                   
+                        
+                        weight += this.entrada * this.derivada((target - this.training.output))
 
+                        this.trainings.push(this.training)
+
+                        if (target == this.training.output.toFixed(2)) {
+                            i = parseInt(this.epocas) + 1
+                        }
+
+                        this.training = {}
                     }
                 },
-                zeros(n){
-                    if(n == 0){
+                zeros(n) {
+                    if (n == 0) {
                         return '0.0000'
                     }
-                    else{
+                    else {
                         let str = n.toString().trim()
                         let length = str.length
                         let dif = 6 - length
-                        if(dif > 0){
+                        if (dif > 0) {
                             for (let i = 0; i < dif.length; i++) {
                                 str += '0'
-                                
                             }
                         }
-                        n = str
+                        n = parseFloat(str)
                         return n
                     }
                 }
