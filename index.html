@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-
+<title>First Alghorithm</title>
 <head>
     <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.min.css" rel="stylesheet">
@@ -24,9 +24,6 @@
                             </v-data-table>
                         </template>
 
-                        <!-- <span id="desc_entrada">entrada:{{entrada}}</span><br>
-                        <span id="desc_busca">busca:{{busca}}</span><br>
-                        <span id="desc_epocas">épocas:{{epocas}}</span> -->
                         <v-form ref="form">
                             <v-text-field label="Entrada" v-model="entrada" required></v-text-field>
 
@@ -34,11 +31,11 @@
 
                             <v-text-field label="Epocas" v-model="epocas" required></v-text-field>
 
-                            <v-btn color="error">
-                                Cancelar
+                            <v-btn color="error" @click="trainings=[],entrada='',busca='',epocas=''">
+                                Limpar
                             </v-btn>
 
-                            <v-btn color="warning" @click="executar">
+                            <v-btn color="info" @click="executar">
                                 Confirmar
                             </v-btn>
                         </v-form>
@@ -76,18 +73,21 @@
                     return n * (1 - n)
                 },
                 executar() {
-                    let target = this.busca //SINAIS DE ENTRADA
+                    let target = this.busca
                     let weight = Math.random() // PESO SIGNÁPTICO
-                    let bias = Math.random()//BIAS
+                    let bias = 2 //BIAS
 
                     for (let i = 1; i <= this.epocas; i++) {                            
 
                         this.training.id = i
-                        this.training.output = Math.tanh(this.entrada * weight)// função hiperbólica, função de ativação
+                        // this.training.output = Math.tanh(this.entrada * weight)// função hiperbólica, função de ativação
+                        this.training.output = 1 / (1 + Math.pow(Math.E, -(this.entrada * weight))) // função sigmoide, função de ativação
+
+
+
                         this.training.error  = this.zeros(Math.abs((target - this.training.output))).toFixed(4) 
 
                         weight += this.entrada * this.derivada((target - this.training.output))  * bias
-                        
 
                         this.trainings.push(this.training)
 
