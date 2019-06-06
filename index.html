@@ -81,7 +81,8 @@
 
                         this.training.id = i
                         // this.training.output = Math.tanh(this.entrada * weight)// função hiperbólica, função de ativação
-                        this.training.output = 1 / (1 + Math.pow(Math.E, -(this.entrada * weight))) // função sigmoide, função de ativação
+                        // this.training.output = 1 / (1 + Math.pow(Math.E, -(this.entrada * weight))) // função sigmoide, função de ativação
+                        this.training.output = Math.max((this.entrada * weight),0) // função ReLU, função de ativação
 
 
 
