@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<title>First Alghorithm</title>
+
+<head>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+</head>
+
+<body>
+    <div id="app">
+        <v-app>
+            <v-content>
+                <v-container>
+                    <template>
+                        <template>
+                            <h1>Regressão Linear - Prever Próximo valor</h1>
+                            <v-divider></v-divider>
+                            <br>
+                        </template>
+
+                        <v-form ref="form">
+                            <v-text-field label="Eixo Y" placeholder="" v-model="eixoY" required></v-text-field>
+
+                            <v-text-field label="Eixo X" placeholder="" v-model="eixoX" required></v-text-field>
+
+                            <v-btn color="error" @click="eixoY='',eixoX=''">
+                                Limpar
+                            </v-btn>
+
+                            <v-btn color="info" @click="executar">
+                                Prever
+                            </v-btn>
+                        </v-form>
+                    </template>
+                </v-container>
+            </v-content>
+        </v-app>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.js"></script>
+    <!-- <script src="./js/funcao-aproximacao.js"></script> -->
+    <script>
+        new Vue({
+            el: '#app',
+            data() {
+                return {
+                    eixoX: '1, 2, 3, 4',
+                    eixoY: '10, 20, 30, 40'
+                }
+            },
+            methods: {
+                converteArray(array) {
+                    var temp = []
+                    for (let i = 0; i < array.length; i++) {
+                        temp.push(parseFloat(array[i].toString().trim()))
+                    }
+                    return temp
+
+                },
+                regressaoLinear(arrayX, arrayY, p){
+
+                    let resultado1 = 0
+                    let resultado2 = 0
+                    let resultado3 = 0
+                    let resultado4 = 0
+                    let resultado5 = 0
+
+                    resultado1 = (this.somatorio(arrayX) * this.somatorio(arrayY)) / arrayX.length
+                    resultado2 = (this.somatorio(arrayX) * this.somatorio(arrayX)) / arrayX.length
+                    resultado3 = (this.somatorio(this.produto(arrayX,arrayY)) - resultado1)
+                    resultado4 = (resultado3 / (this.somatorio(this.quadrados(arrayX)) - resultado2))
+                    resultado5 = this.media(arrayY) - (resultado4 * this.media(arrayX))
+
+                    return ((resultado4 * p) + resultado5).toFixed(0)
+
+                },
+                produto(x, y){
+                    let temp = []
+                    for (let i = 0; i < x.length; i++) {
+                        temp.push(parseFloat(x[i]) * parseFloat(y[i]))
+                    }
+                    return temp
+                },  
+                quadrados(x){
+                    let temp = []
+                    for (let i = 0; i < x.length; i++) {
+                        temp.push(parseFloat(x[i]) * parseFloat(x[i]))
+                    }
+                    return temp
+                },
+                somatorio(x){
+                    let temp = 0
+
+                    for(let i=0;i<x.length;i++){
+                        temp += parseFloat(x[i])
+                    }
+                    return temp
+                },
+                media(x){
+                    return this.somatorio(x) / x.length 
+                },
+                executar() {
+                    let eixoX = this.eixoX
+                    let eixoy = this.eixoY
+
+                    let vetorX = eixoX.split(',')
+                    let vetorY = eixoy.split(',')
+
+                    vetorX = this.converteArray(vetorX)
+                    vetorY = this.converteArray(vetorY)
+
+                    let tamX = vetorX.length
+                    let tamY = vetorY.length
+
+                    let tempX = vetorX.slice(0, tamY)
+                    let tempY = vetorY
+
+                    let dif = tamX - tamY //quantidade de números novos digitados
+
+
+                    if (dif < 0) return
+
+                    let regressoes = []
+
+                    for (let i = 0; i < dif; i++) {
+                        let temp = this.regressaoLinear(tempX, tempY, vetorX[tamY+i])
+                        regressoes.push(temp)
+                    }
+
+
+                    let novoY = tempY.concat(regressoes)
+                    this.eixoY  = novoY.join(', ')
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>

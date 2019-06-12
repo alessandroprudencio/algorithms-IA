@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <title>First Alghorithm</title>
+
 <head>
     <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.min.css" rel="stylesheet">
@@ -14,7 +15,12 @@
                 <v-container>
                     <template>
                         <template>
+                            <h1>Testando funções de aproximação</h1>
+                            <v-divider></v-divider>
+                            <br>
+
                             <v-data-table :headers="headers" :items="trainings" class="elevation-1">
+
                                 <template v-slot:items="props">
                                     <td>{{props.item.id}}</td>
                                     <td>{{props.item.error}}</td>
@@ -25,11 +31,13 @@
                         </template>
 
                         <v-form ref="form">
-                            <v-text-field label="Entrada" v-model="entrada" required></v-text-field>
+                            <v-text-field label="Entrada" maxlength="4" placeholder="Entre  0 e 1" v-model="entrada"
+                                required></v-text-field>
 
-                            <v-text-field label="Busca" v-model="busca" required></v-text-field>
+                            <v-text-field label="Busca" maxlength="4" placeholder="Entre  0 e 1" v-model="busca"
+                                required></v-text-field>
 
-                            <v-text-field label="Epocas" v-model="epocas" required></v-text-field>
+                            <v-text-field label="Epocas" maxlength="4" v-model="epocas" required></v-text-field>
 
                             <v-btn color="error" @click="trainings=[],entrada='',busca='',epocas=''">
                                 Limpar
@@ -77,18 +85,20 @@
                     let weight = Math.random() // PESO SIGNÁPTICO
                     let bias = 2 //BIAS
 
-                    for (let i = 1; i <= this.epocas; i++) {                            
+                    this.trainings = []
+
+                    for (let i = 1; i <= this.epocas; i++) {
 
                         this.training.id = i
                         // this.training.output = Math.tanh(this.entrada * weight)// função hiperbólica, função de ativação
                         // this.training.output = 1 / (1 + Math.pow(Math.E, -(this.entrada * weight))) // função sigmoide, função de ativação
-                        this.training.output = Math.max((this.entrada * weight),0) // função ReLU, função de ativação
+                        this.training.output = Math.max((this.entrada * weight), 0) // função ReLU, função de ativação
 
 
 
-                        this.training.error  = this.zeros(Math.abs((target - this.training.output))).toFixed(4) 
+                        this.training.error = this.zeros(Math.abs((target - this.training.output))).toFixed(4)
 
-                        weight += this.entrada * this.derivada((target - this.training.output))  * bias
+                        weight += this.entrada * this.derivada((target - this.training.output)) * bias
 
                         this.trainings.push(this.training)
 
